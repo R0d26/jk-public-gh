@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Cloning Git Repository') {
             steps {
@@ -8,7 +7,7 @@ pipeline {
             }
         }
         
-        stage('Buildig Image') {
+        stage('Building Image') {
             steps {
                 sh 'docker build -t webapp:${BUILD_NUMBER} .'
             }
@@ -17,9 +16,10 @@ pipeline {
         stage('Deploying Application') {
             steps {
                 sh '''
-                #docker stop webapp_ctr
-                docker run --rm -d -p 3000:3000 --name webapp_ctr webapp:${BUILD_NUMBER}'
-            ...
+                docker stop webapp_ctr || true
+                docker run --rm -d -p 3000:3000 --name webapp_ctr webapp:${BUILD_NUMBER}
+                '''
             }
         }
     }
+}
